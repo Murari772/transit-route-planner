@@ -1,0 +1,37 @@
+[
+    {
+        "source": "Rajiv Chowk",
+        "destination": "New Delhi",
+        "weight": 4.0,
+        "mode": "METRO",
+        "route": "Yellow Line"
+    },
+    {
+        "source": "New Delhi",
+        "destination": "Kashmere Gate",
+        "weight": 6.0,
+        "mode": "METRO",
+        "route": "Yellow Line"
+    },
+    {
+        "source": "Rajiv Chowk",
+        "destination": "Mandi House",
+        "weight": 3.0,
+        "mode": "METRO",
+        "route": "Blue Line"
+    },
+    {
+        "source": "Mandi House",
+        "destination": "Yamuna Bank",
+        "weight": 5.0,
+        "mode": "METRO",
+        "route": "Blue Line"
+    },
+    {
+        "source": "Kashmere Gate",
+        "destination": "Mandi House",
+        "weight": 8.0,
+        "mode": "METRO",
+        "route": "Violet Line"
+    }
+]
