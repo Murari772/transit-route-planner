@@ -27,8 +27,8 @@ int main(int argc, char* argv[]) {
     DataLoader::loadMetroNetwork(dataPath, delhiNetwork);
 
     Router router(delhiNetwork, transferPenalty);
-    std::string start = "New Delhi";
-    std::string end = "Mandi House";
+    std::string start = "Mayur Vihar";
+    std::string end = "Vidhan Sabha";
 
     std::cout << "Finding route from " << start << " to " << end 
               << " with transfer penalty: " << transferPenalty << " mins...\n\n";
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
             }
 
             std::cout << "  |  Take [" << path[i].route << "] -> " << path[i].station << " (" << actualTravelTime << " mins)\n";
-            totalTime += path[i].cost; // We still add the full cost to the total time
+            totalTime += path[i].cost; 
         }
     }
     std::cout << "\nTotal estimated travel time: " << totalTime << " minutes.\n";

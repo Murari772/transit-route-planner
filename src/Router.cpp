@@ -26,19 +26,7 @@ std::vector<PathStep> Router::findOptimalRoute(const std::string& start, const s
         RouteNode current = pq.top();
         pq.pop();
 
-        if (current.stationName == end) {
-            // We can continue to find other routes, but since it's Dijkstra, the first time we pop 'end',
-            // it is the shortest path to 'end' on this specific route.
-            // But there could be an even shorter path arriving on a DIFFERENT route if we haven't popped it yet?
-            // Actually, Dijkstra guarantees that when we pop a node, we have found the shortest path to that state.
-            // So we have found the shortest path to (end, current.currentRoute). 
-            // We shouldn't break immediately, because we want the absolute minimum over all routes to 'end'.
-            // However, since we return the minimum over all routes at the end, it's safe to just let it run 
-            // or break if we only want the first one. Let's let it run until queue is empty or we implement an early exit.
-            // Early exit: if the popped node is the destination, and since weights are non-negative, 
-            // this is the absolute shortest path to 'end' across ANY route!
-            break;
-        }
+        if (current.stationName == end) break;
 
         if (current.accumulatedCost > minCost[current.stationName][current.currentRoute]) continue;
 
@@ -57,7 +45,7 @@ std::vector<PathStep> Router::findOptimalRoute(const std::string& start, const s
                 parentNode[edge.destination][edge.routeName] = {
                     current.stationName, 
                     edge.routeName, 
-                    edge.weight + penalty, // Record cost of this step including penalty
+                    edge.weight + penalty, 
                     current.currentRoute
                 };
                 pq.push({edge.destination, newCost, edge.routeName});

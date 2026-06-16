@@ -14,6 +14,27 @@
         "route": "Yellow Line"
     },
     {
+        "source": "Kashmere Gate",
+        "destination": "Civil Lines",
+        "weight": 3.0,
+        "mode": "METRO",
+        "route": "Yellow Line"
+    },
+    {
+        "source": "Civil Lines",
+        "destination": "Vidhan Sabha",
+        "weight": 2.5,
+        "mode": "METRO",
+        "route": "Yellow Line"
+    },
+    {
+        "source": "Rajiv Chowk",
+        "destination": "Central Secretariat",
+        "weight": 4.0,
+        "mode": "METRO",
+        "route": "Yellow Line"
+    },
+    {
         "source": "Rajiv Chowk",
         "destination": "Mandi House",
         "weight": 3.0,
@@ -28,10 +49,52 @@
         "route": "Blue Line"
     },
     {
+        "source": "Yamuna Bank",
+        "destination": "Akshardham",
+        "weight": 3.5,
+        "mode": "METRO",
+        "route": "Blue Line"
+    },
+    {
+        "source": "Akshardham",
+        "destination": "Mayur Vihar",
+        "weight": 4.0,
+        "mode": "METRO",
+        "route": "Blue Line"
+    },
+    {
         "source": "Kashmere Gate",
         "destination": "Mandi House",
         "weight": 8.0,
         "mode": "METRO",
         "route": "Violet Line"
+    },
+    {
+        "source": "Mandi House",
+        "destination": "Central Secretariat",
+        "weight": 6.0,
+        "mode": "METRO",
+        "route": "Violet Line"
+    },
+    {
+        "source": "Central Secretariat",
+        "destination": "JLN Stadium",
+        "weight": 5.0,
+        "mode": "METRO",
+        "route": "Violet Line"
+    },
+    {
+        "source": "Kashmere Gate",
+        "destination": "Shastri Park",
+        "weight": 4.5,
+        "mode": "METRO",
+        "route": "Red Line"
+    },
+    {
+        "source": "Shastri Park",
+        "destination": "Welcome",
+        "weight": 3.0,
+        "mode": "METRO",
+        "route": "Red Line"
     }
 ]
