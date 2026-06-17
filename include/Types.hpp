@@ -7,6 +7,11 @@ enum class TransitMode {
     WALK
 };
 
+enum class OptimizationCriterion {
+    LEAST_TIME,
+    LEAST_INTERCHANGES
+};
+
 struct Edge {
     std::string destination;
     double weight; 
@@ -14,12 +19,23 @@ struct Edge {
     std::string routeName; 
 };
 
+struct RouteCost {
+    double time;
+    int interchanges;
+
+    bool isBetterThan(const RouteCost& other, OptimizationCriterion criterion) const {
+        if (criterion == OptimizationCriterion::LEAST_TIME) {
+            if (time != other.time) return time < other.time;
+            return interchanges < other.interchanges;
+        } else {
+            if (interchanges != other.interchanges) return interchanges < other.interchanges;
+            return time < other.time;
+        }
+    }
+};
+
 struct RouteNode {
     std::string stationName;
-    double accumulatedCost;
+    RouteCost cost;
     std::string currentRoute;
-
-    bool operator>(const RouteNode& other) const {
-        return accumulatedCost > other.accumulatedCost;
-    }
 };

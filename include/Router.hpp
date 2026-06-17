@@ -9,6 +9,16 @@ struct PathStep {
     double cost;
 };
 
+class RouteNodeComparator {
+    OptimizationCriterion criterion;
+public:
+    RouteNodeComparator(OptimizationCriterion c) : criterion(c) {}
+
+    bool operator()(const RouteNode& a, const RouteNode& b) const {
+        return b.cost.isBetterThan(a.cost, criterion);
+    }
+};
+
 class Router {
 private:
     const Graph& graph;
@@ -16,5 +26,5 @@ private:
 
 public:
     explicit Router(const Graph& g, double penalty = 10.0) : graph(g), transferPenalty(penalty) {}
-    std::vector<PathStep> findOptimalRoute(const std::string& start, const std::string& end);
+    std::vector<PathStep> findBestRoute(const std::string& start, const std::string& end, OptimizationCriterion criterion = OptimizationCriterion::LEAST_TIME);
 };

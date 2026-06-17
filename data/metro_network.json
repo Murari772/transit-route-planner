@@ -1,100 +1,56 @@
 [
-    {
-        "source": "Rajiv Chowk",
-        "destination": "New Delhi",
-        "weight": 4.0,
-        "mode": "METRO",
-        "route": "Yellow Line"
-    },
-    {
-        "source": "New Delhi",
-        "destination": "Kashmere Gate",
-        "weight": 6.0,
-        "mode": "METRO",
-        "route": "Yellow Line"
-    },
-    {
-        "source": "Kashmere Gate",
-        "destination": "Civil Lines",
-        "weight": 3.0,
-        "mode": "METRO",
-        "route": "Yellow Line"
-    },
-    {
-        "source": "Civil Lines",
-        "destination": "Vidhan Sabha",
-        "weight": 2.5,
-        "mode": "METRO",
-        "route": "Yellow Line"
-    },
-    {
-        "source": "Rajiv Chowk",
-        "destination": "Central Secretariat",
-        "weight": 4.0,
-        "mode": "METRO",
-        "route": "Yellow Line"
-    },
-    {
-        "source": "Rajiv Chowk",
-        "destination": "Mandi House",
-        "weight": 3.0,
-        "mode": "METRO",
-        "route": "Blue Line"
-    },
-    {
-        "source": "Mandi House",
-        "destination": "Yamuna Bank",
-        "weight": 5.0,
-        "mode": "METRO",
-        "route": "Blue Line"
-    },
-    {
-        "source": "Yamuna Bank",
-        "destination": "Akshardham",
-        "weight": 3.5,
-        "mode": "METRO",
-        "route": "Blue Line"
-    },
-    {
-        "source": "Akshardham",
-        "destination": "Mayur Vihar",
-        "weight": 4.0,
-        "mode": "METRO",
-        "route": "Blue Line"
-    },
-    {
-        "source": "Kashmere Gate",
-        "destination": "Mandi House",
-        "weight": 8.0,
-        "mode": "METRO",
-        "route": "Violet Line"
-    },
-    {
-        "source": "Mandi House",
-        "destination": "Central Secretariat",
-        "weight": 6.0,
-        "mode": "METRO",
-        "route": "Violet Line"
-    },
-    {
-        "source": "Central Secretariat",
-        "destination": "JLN Stadium",
-        "weight": 5.0,
-        "mode": "METRO",
-        "route": "Violet Line"
-    },
-    {
-        "source": "Kashmere Gate",
-        "destination": "Shastri Park",
-        "weight": 4.5,
-        "mode": "METRO",
-        "route": "Red Line"
-    },
-    {
-        "source": "Shastri Park",
-        "destination": "Welcome",
-        "weight": 3.0,
-        "mode": "METRO",
-        "route": "Red Line"
-    }
+    { "source":"Samaypur Badli","destination":"Rohini Sector 18","weight":3.0,"mode":"METRO","route":"Yellow Line" },
+    { "source":"Rohini Sector 18","destination":"Haiderpur Badli Mor","weight":2.5,"mode":"METRO","route":"Yellow Line" },
+    { "source":"Haiderpur Badli Mor","destination":"Azadpur","weight":4.0,"mode":"METRO","route":"Yellow Line" },
+    { "source":"Azadpur","destination":"Model Town","weight":2.5,"mode":"METRO","route":"Yellow Line" },
+    { "source":"Model Town","destination":"GTB Nagar","weight":2.0,"mode":"METRO","route":"Yellow Line" },
+    { "source":"GTB Nagar","destination":"Vishwavidyalaya","weight":2.0,"mode":"METRO","route":"Yellow Line" },
+    { "source":"Vishwavidyalaya","destination":"Civil Lines","weight":3.0,"mode":"METRO","route":"Yellow Line" },
+    { "source":"Civil Lines","destination":"Kashmere Gate","weight":2.0,"mode":"METRO","route":"Yellow Line" },
+    { "source":"Kashmere Gate","destination":"Chandni Chowk","weight":2.0,"mode":"METRO","route":"Yellow Line" },
+    { "source":"Chandni Chowk","destination":"New Delhi","weight":2.0,"mode":"METRO","route":"Yellow Line" },
+    { "source":"New Delhi","destination":"Rajiv Chowk","weight":2.0,"mode":"METRO","route":"Yellow Line" },
+    { "source":"Rajiv Chowk","destination":"Patel Chowk","weight":2.0,"mode":"METRO","route":"Yellow Line" },
+    { "source":"Patel Chowk","destination":"Central Secretariat","weight":2.0,"mode":"METRO","route":"Yellow Line" },
+
+    { "source":"Dwarka Sector 21","destination":"Dwarka","weight":3.0,"mode":"METRO","route":"Blue Line" },
+    { "source":"Dwarka","destination":"Janakpuri West","weight":5.0,"mode":"METRO","route":"Blue Line" },
+    { "source":"Janakpuri West","destination":"Rajouri Garden","weight":5.0,"mode":"METRO","route":"Blue Line" },
+    { "source":"Rajouri Garden","destination":"Karol Bagh","weight":6.0,"mode":"METRO","route":"Blue Line" },
+    { "source":"Karol Bagh","destination":"Rajiv Chowk","weight":5.0,"mode":"METRO","route":"Blue Line" },
+    { "source":"Rajiv Chowk","destination":"Barakhamba Road","weight":2.0,"mode":"METRO","route":"Blue Line" },
+    { "source":"Barakhamba Road","destination":"Mandi House","weight":2.0,"mode":"METRO","route":"Blue Line" },
+    { "source":"Mandi House","destination":"Pragati Maidan","weight":2.0,"mode":"METRO","route":"Blue Line" },
+    { "source":"Pragati Maidan","destination":"Yamuna Bank","weight":3.0,"mode":"METRO","route":"Blue Line" },
+    { "source":"Yamuna Bank","destination":"Akshardham","weight":3.0,"mode":"METRO","route":"Blue Line" },
+    { "source":"Akshardham","destination":"Mayur Vihar Phase 1","weight":3.0,"mode":"METRO","route":"Blue Line" },
+
+    { "source":"Kashmere Gate","destination":"Lal Quila","weight":2.0,"mode":"METRO","route":"Violet Line" },
+    { "source":"Lal Quila","destination":"Jama Masjid","weight":2.0,"mode":"METRO","route":"Violet Line" },
+    { "source":"Jama Masjid","destination":"Delhi Gate","weight":2.0,"mode":"METRO","route":"Violet Line" },
+    { "source":"Delhi Gate","destination":"ITO","weight":2.0,"mode":"METRO","route":"Violet Line" },
+    { "source":"ITO","destination":"Mandi House","weight":2.0,"mode":"METRO","route":"Violet Line" },
+    { "source":"Mandi House","destination":"Janpath","weight":2.0,"mode":"METRO","route":"Violet Line" },
+    { "source":"Janpath","destination":"Central Secretariat","weight":2.0,"mode":"METRO","route":"Violet Line" },
+    { "source":"Central Secretariat","destination":"JLN Stadium","weight":3.0,"mode":"METRO","route":"Violet Line" },
+
+    { "source":"Rithala","destination":"Rohini East","weight":3.0,"mode":"METRO","route":"Red Line" },
+    { "source":"Rohini East","destination":"Netaji Subhash Place","weight":4.0,"mode":"METRO","route":"Red Line" },
+    { "source":"Netaji Subhash Place","destination":"Inderlok","weight":4.0,"mode":"METRO","route":"Red Line" },
+    { "source":"Inderlok","destination":"Kashmere Gate","weight":5.0,"mode":"METRO","route":"Red Line" },
+    { "source":"Kashmere Gate","destination":"Shastri Park","weight":3.0,"mode":"METRO","route":"Red Line" },
+    { "source":"Shastri Park","destination":"Welcome","weight":3.0,"mode":"METRO","route":"Red Line" },
+
+    { "source":"Majlis Park","destination":"Azadpur","weight":3.0,"mode":"METRO","route":"Pink Line" },
+    { "source":"Azadpur","destination":"Netaji Subhash Place","weight":4.0,"mode":"METRO","route":"Pink Line" },
+    { "source":"Netaji Subhash Place","destination":"Rajouri Garden","weight":8.0,"mode":"METRO","route":"Pink Line" },
+    { "source":"Rajouri Garden","destination":"INA","weight":8.0,"mode":"METRO","route":"Pink Line" },
+    { "source":"INA","destination":"Lajpat Nagar","weight":4.0,"mode":"METRO","route":"Pink Line" },
+
+    { "source":"Janakpuri West","destination":"Dabri Mor","weight":3.0,"mode":"METRO","route":"Magenta Line" },
+    { "source":"Dabri Mor","destination":"Hauz Khas","weight":8.0,"mode":"METRO","route":"Magenta Line" },
+    { "source":"Hauz Khas","destination":"Kalkaji Mandir","weight":6.0,"mode":"METRO","route":"Magenta Line" },
+
+    { "source":"Central Secretariat","destination":"INA","weight":4.0,"mode":"METRO","route":"Interchange Link" },
+    { "source":"Hauz Khas","destination":"INA","weight":3.0,"mode":"METRO","route":"Interchange Link" }
 ]
