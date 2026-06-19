@@ -1,11 +1,13 @@
 #pragma once
 #include "Graph.hpp"
+#include "Types.hpp"
 #include <vector>
 #include <string>
 
 struct PathStep {
     std::string station;
     std::string route;
+    TransitMode mode;
     double cost;
 };
 
@@ -26,5 +28,10 @@ private:
 
 public:
     explicit Router(const Graph& g, double penalty = 10.0) : graph(g), transferPenalty(penalty) {}
-    std::vector<PathStep> findBestRoute(const std::string& start, const std::string& end, OptimizationCriterion criterion = OptimizationCriterion::LEAST_TIME);
+
+    std::vector<PathStep> findBestRoute(
+        const std::string& start, 
+        const std::string& end, 
+        OptimizationCriterion criterion = OptimizationCriterion::LEAST_TIME
+    );
 };

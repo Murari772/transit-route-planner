@@ -27,7 +27,8 @@ struct RouteCost {
         if (criterion == OptimizationCriterion::LEAST_TIME) {
             if (time != other.time) return time < other.time;
             return interchanges < other.interchanges;
-        } else {
+        } 
+        else {
             if (interchanges != other.interchanges) return interchanges < other.interchanges;
             return time < other.time;
         }
@@ -38,4 +39,5 @@ struct RouteNode {
     std::string stationName;
     RouteCost cost;
     std::string currentRoute;
+    TransitMode currentMode;
 };

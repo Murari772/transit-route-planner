@@ -1,0 +1,146 @@
+[
+    {
+        "source": "Kashmere Gate",
+        "destination": "ISBT",
+        "weight": 3.0,
+        "mode": "BUS",
+        "route": "901"
+    },
+    {
+        "source": "ISBT",
+        "destination": "Red Fort",
+        "weight": 4.0,
+        "mode": "BUS",
+        "route": "901"
+    },
+    {
+        "source": "Red Fort",
+        "destination": "Delhi Gate",
+        "weight": 3.0,
+        "mode": "BUS",
+        "route": "901"
+    },
+    {
+        "source": "Delhi Gate",
+        "destination": "ITO",
+        "weight": 3.0,
+        "mode": "BUS",
+        "route": "901"
+    },
+    {
+        "source": "ITO",
+        "destination": "Pragati Maidan",
+        "weight": 2.0,
+        "mode": "BUS",
+        "route": "901"
+    },
+
+    {
+        "source": "Rajouri Garden",
+        "destination": "Mayapuri",
+        "weight": 4.0,
+        "mode": "BUS",
+        "route": "764"
+    },
+    {
+        "source": "Mayapuri",
+        "destination": "Naraina",
+        "weight": 4.0,
+        "mode": "BUS",
+        "route": "764"
+    },
+    {
+        "source": "Naraina",
+        "destination": "Dhaula Kuan",
+        "weight": 5.0,
+        "mode": "BUS",
+        "route": "764"
+    },
+    {
+        "source": "Dhaula Kuan",
+        "destination": "INA",
+        "weight": 6.0,
+        "mode": "BUS",
+        "route": "764"
+    },
+
+    {
+        "source": "Mandi House",
+        "destination": "India Gate",
+        "weight": 4.0,
+        "mode": "BUS",
+        "route": "425"
+    },
+    {
+        "source": "India Gate",
+        "destination": "Central Secretariat",
+        "weight": 3.0,
+        "mode": "BUS",
+        "route": "425"
+    },
+    {
+        "source": "Central Secretariat",
+        "destination": "INA",
+        "weight": 4.0,
+        "mode": "BUS",
+        "route": "425"
+    },
+
+    {
+        "source": "Azadpur",
+        "destination": "Adarsh Nagar",
+        "weight": 3.0,
+        "mode": "BUS",
+        "route": "120"
+    },
+    {
+        "source": "Adarsh Nagar",
+        "destination": "Model Town Extension",
+        "weight": 3.0,
+        "mode": "BUS",
+        "route": "120"
+    },
+    {
+        "source": "Model Town Extension",
+        "destination": "Mukherjee Nagar",
+        "weight": 3.0,
+        "mode": "BUS",
+        "route": "120"
+    },
+    {
+        "source": "Mukherjee Nagar",
+        "destination": "Vishwavidyalaya",
+        "weight": 2.0,
+        "mode": "BUS",
+        "route": "120"
+    },
+
+    {
+        "source": "Janakpuri West",
+        "destination": "District Centre",
+        "weight": 3.0,
+        "mode": "BUS",
+        "route": "879"
+    },
+    {
+        "source": "District Centre",
+        "destination": "Hari Nagar",
+        "weight": 3.0,
+        "mode": "BUS",
+        "route": "879"
+    },
+    {
+        "source": "Hari Nagar",
+        "destination": "Tilak Nagar Market",
+        "weight": 2.0,
+        "mode": "BUS",
+        "route": "879"
+    },
+    {
+        "source": "Tilak Nagar Market",
+        "destination": "Rajouri Garden",
+        "weight": 3.0,
+        "mode": "BUS",
+        "route": "879"
+    }
+]

@@ -5,6 +5,15 @@
 #include <string>
 #include <fstream>
 
+std::string getModeString(TransitMode mode) {
+    switch (mode) {
+        case TransitMode::METRO: return "Metro Line";
+        case TransitMode::BUS:   return "Bus Route";
+        case TransitMode::WALK:  return "Walk";
+        default:                 return "Unknown";
+    }
+}
+
 int main(int argc, char* argv[]) {
     const double transferTime = 5.0;
 
@@ -18,14 +27,17 @@ int main(int argc, char* argv[]) {
 
     Graph delhiNetwork;
 
-    std::string dataPath = "data/metro_network.json";
-    std::ifstream testFile(dataPath);
+    std::vector<std::string> dataPaths = {"../data/metro_network.json", "../data/bus_routes.json"};
+    //std::string dataPath = "../data/metro_network.json";
+    /*std::ifstream testFile(dataPath);
 
     if (!testFile) {
         dataPath = "../data/metro_network.json";
-    }
+    }*/
 
-    DataLoader::loadMetroNetwork(dataPath, delhiNetwork);
+    for(std::string Mode : dataPaths) {
+        DataLoader::loadMetroNetwork(Mode, delhiNetwork);
+    }
 
     Router router(delhiNetwork, transferTime);
 
@@ -62,15 +74,20 @@ int main(int argc, char* argv[]) {
     int totalInterchanges = 0;
     double segmentTime = 0;
     std::string currentRoute;
+    TransitMode currentMode = TransitMode::WALK;
 
     if (path.size() > 1) {
         currentRoute = path[1].route;
+        currentMode = path[1].mode;
     }
 
     for (size_t i = 1; i < path.size(); ++i) {
         bool isInterchange =
             path[i - 1].route != "Origin" &&
             path[i - 1].route != path[i].route;
+
+        //bool isModeChange = path[i - 1]
+        
 
         double actualTravelTime = path[i].cost;
 
@@ -79,20 +96,21 @@ int main(int argc, char* argv[]) {
         }
 
         if (isInterchange) {
-            std::cout << "  |  Take [" << currentRoute
+            std::cout << "  |  Take " << getModeString(currentMode) << " [" << currentRoute
                       << "] -> "
                       << path[i - 1].station
                       << " (" << segmentTime << " mins)\n";
 
-            std::cout << "\n*** Interchange from "
+            std::cout << "\n*** Interchange from " << getModeString(currentMode) << " ["
                       << currentRoute
-                      << " to "
+                      << "] to " << getModeString(path[i].mode) << " ["
                       << path[i].route
-                      << " (" << transferTime << " mins) ***\n\n";
+                      << "] (" << transferTime << " mins) ***\n\n";
 
             totalInterchanges++;
             segmentTime = actualTravelTime;
             currentRoute = path[i].route;
+            currentMode = path[i].mode;
         } else {
             segmentTime += actualTravelTime;
         }
@@ -101,7 +119,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (path.size() > 1) {
-        std::cout << "  |  Take [" << currentRoute
+        std::cout << "  |  Take " << getModeString(currentMode) << " [" << currentRoute
                   << "] -> "
                   << path.back().station
                   << " (" << segmentTime << " mins)\n";

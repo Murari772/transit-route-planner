@@ -6,8 +6,10 @@
 struct ParentInfo {
     std::string station;
     std::string route;
+    TransitMode mode;
     double cost;
     std::string previousRoute;
+    TransitMode previousMode;
 };
 
 std::vector<PathStep> Router::findBestRoute(
@@ -37,7 +39,7 @@ std::vector<PathStep> Router::findBestRoute(
         std::unordered_map<std::string, ParentInfo>
     > parentNode;
 
-    pq.push({start, {0.0, 0}, "START"});
+    pq.push({start, {0.0, 0}, "START", TransitMode::WALK});
     minCost[start]["START"] = {0.0, 0};
 
     while (!pq.empty()) {
@@ -46,7 +48,8 @@ std::vector<PathStep> Router::findBestRoute(
 
         if (current.stationName == end) break;
 
-        if (minCost[current.stationName][current.currentRoute].isBetterThan(current.cost, criterion)) continue;
+        if (minCost[current.stationName][current.currentRoute].isBetterThan(current.cost, criterion)) 
+            continue;
 
         for (const auto& edge : graph.getNeighbors(current.stationName)) {
             double penalty = 0.0;
@@ -70,11 +73,13 @@ std::vector<PathStep> Router::findBestRoute(
                 parentNode[edge.destination][edge.routeName] = {
                     current.stationName, 
                     edge.routeName, 
+                    edge.mode,
                     edge.weight + penalty, 
-                    current.currentRoute
+                    current.currentRoute,
+                    current.currentMode
                 };
 
-                pq.push({edge.destination, newCost, edge.routeName});
+                pq.push({edge.destination, newCost, edge.routeName, edge.mode});
             }
         }
     }
@@ -101,12 +106,12 @@ std::vector<PathStep> Router::findBestRoute(
 
     while (currentStr != start) {
         auto step = parentNode[currentStr][currRoute];
-        path.push_back({currentStr, step.route, step.cost});
+        path.push_back({currentStr, step.route, step.mode, step.cost});
         currentStr = step.station;
         currRoute = step.previousRoute;
     }
 
-    path.push_back({start, "Origin", 0.0});
+    path.push_back({start, "Origin", TransitMode::WALK, 0.0});
     std::reverse(path.begin(), path.end());
 
     return path;
