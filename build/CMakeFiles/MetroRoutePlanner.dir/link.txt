@@ -1,1 +1,0 @@
-/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/MetroRoutePlanner.dir/src/DataLoader.cpp.o CMakeFiles/MetroRoutePlanner.dir/src/Graph.cpp.o CMakeFiles/MetroRoutePlanner.dir/src/Router.cpp.o CMakeFiles/MetroRoutePlanner.dir/src/main.cpp.o -o MetroRoutePlanner

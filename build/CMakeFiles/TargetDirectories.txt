@@ -1,3 +1,0 @@
-/Users/murarimarupu/metro-route-planner/build/CMakeFiles/MetroRoutePlanner.dir
-/Users/murarimarupu/metro-route-planner/build/CMakeFiles/edit_cache.dir
-/Users/murarimarupu/metro-route-planner/build/CMakeFiles/rebuild_cache.dir
