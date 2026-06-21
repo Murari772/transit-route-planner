@@ -9,6 +9,16 @@
 #include <vector>
 
 namespace {
+std::string trim(const std::string& s) {
+    const size_t start = s.find_first_not_of(" \t\n\r");
+    if (start == std::string::npos) {
+        return "";
+    }
+
+    const size_t end = s.find_last_not_of(" \t\n\r");
+    return s.substr(start, end - start + 1);
+}
+
 constexpr double kTransferTimeMinutes = 5.0;
 
 Graph loadNetwork() {
@@ -79,16 +89,23 @@ int main() {
     });
 
     CROW_ROUTE(app, "/route")
+    .methods(crow::HTTPMethod::Get)
     ([&router](const crow::request& req) {
-        const char* source = req.url_params.get("source");
-        const char* destination = req.url_params.get("destination");
+        const char* sourceParam = req.url_params.get("source");
+        const char* destinationParam = req.url_params.get("destination");
         const char* criterion = req.url_params.get("criterion");
 
-        if (!source || !destination) {
+        if (!sourceParam || !destinationParam) {
             return makeJsonResponse(400, {
                 {"error", "Query parameters 'source' and 'destination' are required."}
             });
         }
+
+        const std::string source = trim(sourceParam);
+        const std::string destination = trim(destinationParam);
+
+        std::cout << "Source: [" << source << "]\n";
+        std::cout << "Destination: [" << destination << "]\n";
 
         return handleRouteRequest(
             source,
@@ -98,7 +115,8 @@ int main() {
         );
     });
 
-    CROW_ROUTE(app, "/route").methods(crow::HTTPMethod::Post)
+    CROW_ROUTE(app, "/route")
+    .methods(crow::HTTPMethod::Post)
     ([&router](const crow::request& req) {
         try {
             const auto body = nlohmann::json::parse(req.body);
@@ -110,9 +128,10 @@ int main() {
             }
 
             const std::string criterion = body.value("criterion", "least_time");
+
             return handleRouteRequest(
-                body["source"].get<std::string>(),
-                body["destination"].get<std::string>(),
+                trim(body["source"].get<std::string>()),
+                trim(body["destination"].get<std::string>()),
                 criterion,
                 router
             );
