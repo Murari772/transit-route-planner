@@ -1,4 +1,5 @@
 #include "Graph.hpp"
+#include <unordered_set>
 
 void Graph::addStation(const std::string& name) {
     if (adjacencyList.find(name) == adjacencyList.end()) {
@@ -28,4 +29,16 @@ const std::vector<Edge>& Graph::getNeighbors(const std::string& station) const {
 
 bool Graph::hasStation(const std::string& name) const {
     return adjacencyList.find(name) != adjacencyList.end();
+}
+
+std::vector<std::string> Graph::getStations() const {
+    std::vector<std::string> stations;
+
+    for(auto it : adjacencyList) {
+        stations.push_back(it.first);
+    }
+
+    std::sort(stations.begin(), stations.end());
+
+    return stations;
 }

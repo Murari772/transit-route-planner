@@ -21,4 +21,6 @@ public:
     
     const std::vector<Edge>& getNeighbors(const std::string& station) const;
     bool hasStation(const std::string& name) const;
+
+    std::vector<std::string> getStations() const;
 };

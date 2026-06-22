@@ -142,6 +142,16 @@ int main() {
         }
     });
 
+    CROW_ROUTE(app, "/stations")
+    .methods(crow::HTTPMethod::Get)
+    ([&delhiNetwork]() {
+        auto stations = delhiNetwork.getStations();
+
+        nlohmann::json response = stations;
+
+        return makeJsonResponse(200, response);
+    });
+
     const int port = 8080;
     std::cout << "Metro Route Planner API listening on http://0.0.0.0:" << port << "\n";
     std::cout << "GET  /route?source=<station>&destination=<station>&criterion=least_time|least_interchanges\n";
