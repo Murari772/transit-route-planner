@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
@@ -6,32 +6,47 @@ function App() {
   const [destination, setDestination] = useState("");
   const [criterion, setCriterion] = useState("");
   const [route, setRoute] = useState(null);
+  const [stations, setStations] = useState([]);
+  const [error, setError] = useState(null);
 
   const handleSearch = async () => {
+    setError(null);
+    setRoute(null);
     try {
+      const actualSource = stations.find(s => s.toLowerCase() === source.toLowerCase()) || source;
+      const actualDestination = stations.find(s => s.toLowerCase() === destination.toLowerCase()) || destination;
+
       const response = await fetch(
-        `http://localhost:8080/route?source=${encodeURIComponent(source)}
-        &destination=${encodeURIComponent(destination)}
-        &criterion=${encodeURIComponent(criterion)}`
+        `http://localhost:8080/route?source=${encodeURIComponent(actualSource)}&destination=${encodeURIComponent(actualDestination)}&criterion=${encodeURIComponent(criterion)}`
       );
       
       if (!response.ok) {
-        throw new Error("Failed to fetch route");
+        setError("Station does not exist or route not found");
+        return;
       }
 
       const data = await response.json();
 
       setRoute(data);
 
-    } catch (error) {
-      console.error("Error: ", error);
+    } catch (err) {
+      console.error("Error: ", err);
+      setError("Station does not exist or route not found");
     }
   }
+
+  useEffect(() => {
+    fetch("http://localhost:8080/stations") 
+      .then(res => res.json())
+      .then(data => setStations(data))
+      .catch(err => console.error(err));
+  }, []);
 
   return (
     <div>
       <input
         type="text"
+        list="stations"
         value={source}
         onChange = {(e) => setSource(e.target.value)}
         placeholder="Enter source"
@@ -39,10 +54,17 @@ function App() {
 
       <input
         type="text"
+        list="stations"
         value={destination}
         onChange = {(e) => setDestination(e.target.value)}
         placeholder="Enter destination"
       />
+
+      <datalist id="stations">
+        {stations.map((station) => (
+          <option key={station} value={station} />
+        ))}
+      </datalist>
 
       <select
         value={criterion}
@@ -57,7 +79,9 @@ function App() {
         Find Route
       </button>
 
-      {route && (
+      {error && <div>{error}</div>}
+
+      {route && !error && (
         <div>
           <h2>Route</h2>
 
