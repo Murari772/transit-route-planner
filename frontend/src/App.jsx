@@ -1,136 +1,124 @@
-import { useState, useEffect } from 'react'
-import './App.css'
+import { useEffect, useState } from 'react'
+import { API_BASE_URL } from './constants'
+import { EmptyRouteState } from './components/EmptyRouteState'
+import { PlannerIntro } from './components/PlannerIntro'
+import { RouteNotice } from './components/RouteNotice'
+import { RouteResults } from './components/RouteResults'
+import { SearchForm } from './components/SearchForm'
+import { normalizeStation } from './utils/formatters'
+import './styles/global.css'
+import './styles/planner.css'
+import './styles/routeResults.css'
+import './styles/routeLines.css'
 
 function App() {
-  const [source, setSource] = useState("");
-  const [destination, setDestination] = useState("");
-  const [criterion, setCriterion] = useState("");
-  const [route, setRoute] = useState(null);
-  const [stations, setStations] = useState([]);
-  const [error, setError] = useState(null);
+  const [source, setSource] = useState('')
+  const [destination, setDestination] = useState('')
+  const [criterion, setCriterion] = useState('least_time')
+  const [route, setRoute] = useState(null)
+  const [stations, setStations] = useState([])
+  const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [stationsStatus, setStationsStatus] = useState('loading')
 
-  const handleSearch = async () => {
-    setError(null);
-    setRoute(null);
+  const canSearch = source.trim() && destination.trim() && !isLoading
+
+  const handleSearch = async (event) => {
+    event.preventDefault()
+    setError(null)
+    setRoute(null)
+
+    if (!source.trim() || !destination.trim()) {
+      setError('Enter both source and destination stations.')
+      return
+    }
+
+    const actualSource = normalizeStation(source, stations)
+    const actualDestination = normalizeStation(destination, stations)
+
+    if (actualSource.toLowerCase() === actualDestination.toLowerCase()) {
+      setError('Choose two different stations.')
+      return
+    }
+
+    setIsLoading(true)
+
     try {
-      const actualSource = stations.find(s => s.toLowerCase() === source.toLowerCase()) || source;
-      const actualDestination = stations.find(s => s.toLowerCase() === destination.toLowerCase()) || destination;
+      const params = new URLSearchParams({
+        source: actualSource,
+        destination: actualDestination,
+        criterion,
+      })
 
-      const response = await fetch(
-        `http://localhost:8080/route?source=${encodeURIComponent(actualSource)}&destination=${encodeURIComponent(actualDestination)}&criterion=${encodeURIComponent(criterion)}`
-      );
-      
-      if (!response.ok) {
-        setError("Station does not exist or route not found");
-        return;
+      const response = await fetch(`${API_BASE_URL}/route?${params}`)
+      const data = await response.json().catch(() => null)
+
+      if (!response.ok || !data?.found) {
+        setError(data?.message || data?.error || 'No route found for these stations.')
+        return
       }
 
-      const data = await response.json();
-
-      setRoute(data);
-
+      setRoute(data)
     } catch (err) {
-      console.error("Error: ", err);
-      setError("Station does not exist or route not found");
+      console.error('Route search failed:', err)
+      setError('Unable to reach the route service. Check that the backend is running.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
+  const swapStations = () => {
+    setSource(destination)
+    setDestination(source)
+    setRoute(null)
+    setError(null)
+  }
+
   useEffect(() => {
-    fetch("http://localhost:8080/stations") 
-      .then(res => res.json())
-      .then(data => setStations(data))
-      .catch(err => console.error(err));
-  }, []);
+    const controller = new AbortController()
+
+    fetch(`${API_BASE_URL}/stations`, { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error('Station request failed')
+        return res.json()
+      })
+      .then((data) => {
+        setStations(Array.isArray(data) ? data.sort((a, b) => a.localeCompare(b)) : [])
+        setStationsStatus('ready')
+      })
+      .catch((err) => {
+        if (err.name === 'AbortError') return
+        console.error('Station list failed:', err)
+        setStationsStatus('error')
+      })
+
+    return () => controller.abort()
+  }, [])
 
   return (
-    <div>
-      <input
-        type="text"
-        list="stations"
-        value={source}
-        onChange = {(e) => setSource(e.target.value)}
-        placeholder="Enter source"
-      />
+    <main className="app-shell">
+      <section className="planner-panel" aria-labelledby="planner-title">
+        <PlannerIntro />
+        <SearchForm
+          source={source}
+          destination={destination}
+          criterion={criterion}
+          stations={stations}
+          stationsStatus={stationsStatus}
+          isLoading={isLoading}
+          canSearch={canSearch}
+          onSourceChange={setSource}
+          onDestinationChange={setDestination}
+          onCriterionChange={setCriterion}
+          onSubmit={handleSearch}
+          onSwapStations={swapStations}
+        />
+      </section>
 
-      <input
-        type="text"
-        list="stations"
-        value={destination}
-        onChange = {(e) => setDestination(e.target.value)}
-        placeholder="Enter destination"
-      />
-
-      <datalist id="stations">
-        {stations.map((station) => (
-          <option key={station} value={station} />
-        ))}
-      </datalist>
-
-      <select
-        value={criterion}
-        onChange={(e) => setCriterion(e.target.value)}
-      >
-        <option value="">Select an option</option>
-        <option value="least_time">Least Time</option>
-        <option value="least_interchanges">Least Interchanges</option>
-      </select>
-
-      <button onClick={handleSearch}>
-        Find Route
-      </button>
-
-      {error && <div>{error}</div>}
-
-      {route && !error && (
-        <div>
-          <h2>Route</h2>
-
-          <p>
-            Total Time: {route.path.totalTravelTimeMinutes} minutes
-          </p>
-
-          <p>
-            Number of Interchanges: {route.path.numberOfInterchanges}
-          </p>
-
-          <ul>
-            {route.path.segments.map((segment, index) => (
-              <li key={index}>
-                {segment.type === "ride" ? (
-                  <>
-                    {segment.from} → {segment.to}
-                    {" | "}
-                    {segment.mode}
-                    {" | "}
-                    {segment.route}
-                    {" | "}
-                    {segment.travelTimeMinutes} min
-
-                    {segment.intermediateStations.length > 0 && (
-                      <>
-                        {" | Stops: "}
-                        {segment.intermediateStations.join(", ")}
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    Interchange at {segment.atStation}:
-                    {" "}
-                    {segment.fromMode} ({segment.fromRoute})
-                    {" → "}
-                    {segment.toMode} ({segment.toRoute})
-                    {" | "}
-                    {segment.transferTimeMinutes} min
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-
+      <RouteNotice message={error} />
+      {!route && !error && <EmptyRouteState />}
+      {route && !error && <RouteResults route={route} />}
+    </main>
   )
 }
 

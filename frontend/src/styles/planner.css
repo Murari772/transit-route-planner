@@ -1,0 +1,197 @@
+.planner-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(420px, 1.14fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.planner-copy {
+  padding-top: 18px;
+}
+
+.planner-copy h1 {
+  max-width: 640px;
+  margin-bottom: 18px;
+  color: #111827;
+  font-size: clamp(2.15rem, 4.7vw, 4.35rem);
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+.intro {
+  max-width: 560px;
+  color: #51606b;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.search-card {
+  border: 1px solid rgba(123, 139, 132, 0.22);
+  border-radius: 8px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 20px 48px rgba(31, 41, 55, 0.08);
+}
+
+.station-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: end;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field span {
+  color: #36454f;
+  font-size: 0.88rem;
+  font-weight: 750;
+}
+
+.field input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #c9d3cf;
+  border-radius: 6px;
+  padding: 0 14px;
+  color: #111827;
+  background: #fbfdfc;
+  outline: none;
+}
+
+.field input:focus,
+.criterion-card:focus-within,
+.swap-button:focus-visible,
+.primary-button:focus-visible {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.15);
+}
+
+.swap-button {
+  width: 44px;
+  height: 48px;
+  border: 1px solid #c9d3cf;
+  border-radius: 6px;
+  color: #0f766e;
+  background: #f8fbfa;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.criteria-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.criterion-card {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  min-height: 86px;
+  border: 1px solid #d2dcd8;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fbfdfc;
+}
+
+.criterion-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.criterion-card span {
+  color: #172026;
+  font-weight: 800;
+}
+
+.criterion-card small {
+  color: #66737c;
+  line-height: 1.4;
+}
+
+.criterion-card.selected {
+  border-color: #0f766e;
+  background: #effaf7;
+}
+
+.form-footer {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.station-status {
+  margin: 0;
+  color: #66737c;
+  font-size: 0.9rem;
+}
+
+.station-status.error {
+  color: #b45309;
+}
+
+.primary-button {
+  min-width: 140px;
+  min-height: 48px;
+  border: 1px solid #0f766e;
+  border-radius: 6px;
+  padding: 0 20px;
+  color: #ffffff;
+  background: #0f766e;
+  font-weight: 800;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: #0b655e;
+}
+
+.primary-button:disabled {
+  border-color: #a8b7b2;
+  background: #a8b7b2;
+}
+
+@media (max-width: 860px) {
+  .planner-panel {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .planner-copy {
+    padding-top: 0;
+  }
+
+  .station-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .swap-button {
+    width: 100%;
+  }
+
+  .criteria-group {
+    grid-template-columns: 1fr;
+  }
+
+  .form-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .primary-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .search-card {
+    padding: 18px;
+  }
+}

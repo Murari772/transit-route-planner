@@ -1,0 +1,98 @@
+.line-red {
+  --line-color: #dc2626;
+  --line-bg: #fef2f2;
+  --line-soft: #fee2e2;
+}
+
+.line-yellow {
+  --line-color: #f1d84d;
+  --line-bg: #fefce8;
+  --line-soft: #fef3c7;
+}
+
+.line-blue {
+  --line-color: #2563eb;
+  --line-bg: #eff6ff;
+  --line-soft: #dbeafe;
+}
+
+.line-green {
+  --line-color: #16a34a;
+  --line-bg: #f0fdf4;
+  --line-soft: #dcfce7;
+}
+
+.line-violet {
+  --line-color: #7c3aed;
+  --line-bg: #f5f3ff;
+  --line-soft: #ede9fe;
+}
+
+.line-pink {
+  --line-color: #db2777;
+  --line-bg: #fdf2f8;
+  --line-soft: #fce7f3;
+}
+
+.line-magenta {
+  --line-color: #c026d3;
+  --line-bg: #fdf4ff;
+  --line-soft: #fae8ff;
+}
+
+.line-orange {
+  --line-color: #ea580c;
+  --line-bg: #fff7ed;
+  --line-soft: #ffedd5;
+}
+
+.line-grey {
+  --line-color: #64748b;
+  --line-bg: #f8fafc;
+  --line-soft: #e2e8f0;
+}
+
+.line-aqua {
+  --line-color: #0891b2;
+  --line-bg: #ecfeff;
+  --line-soft: #cffafe;
+}
+
+.line-bus {
+  --line-color: #111827;
+  --line-bg: #f3f4f6;
+  --line-soft: #e5e7eb;
+}
+
+.line-interchange {
+  --line-color: #d97706;
+  --line-bg: #fffbeb;
+  --line-soft: #fef3c7;
+}
+
+.step-content[class*='line-'] {
+  border-left-color: var(--line-color);
+  background: #ffffff;
+}
+
+.step-marker[class*='line-'] {
+  background: var(--line-color);
+}
+
+.step-marker.interchange[class*='line-'] {
+  color: var(--line-color);
+  background: var(--line-soft);
+}
+
+.route-badge[class*='line-'] {
+  color: var(--line-color);
+  background: var(--line-bg);
+}
+
+.step-content[class*='line-'] .step-meta span {
+  background: var(--line-soft);
+}
+
+.step-content[class*='line-'] .stops-details summary {
+  color: var(--line-color);
+}
