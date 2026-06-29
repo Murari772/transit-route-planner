@@ -1,5 +1,6 @@
 #include "Graph.hpp"
 #include <unordered_set>
+#include <algorithm>
 
 void Graph::addStation(const std::string& name) {
     if (adjacencyList.find(name) == adjacencyList.end()) {
