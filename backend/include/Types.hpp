@@ -12,8 +12,15 @@ enum class OptimizationCriterion {
     LEAST_INTERCHANGES
 };
 
+struct StationMetadata {
+    std::string id;
+    std::string name;
+    double lat;
+    double lon;
+};
+
 struct Edge {
-    std::string destination;
+    std::string destination; // Now holds station ID
     double weight; 
     TransitMode mode;
     std::string routeName; 
@@ -36,8 +43,20 @@ struct RouteCost {
 };
 
 struct RouteNode {
-    std::string stationName;
+    std::string stationId;
     RouteCost cost;
     std::string currentRoute;
     TransitMode currentMode;
+    bool hasBoardedTransit;
+    TransitMode lastTransitMode;
+    std::string lastTransitRoute;
+};
+
+// Represents a step in the final path
+struct PathStep {
+    std::string stationId;
+    std::string routeName;
+    TransitMode mode;
+    double cumulativeTime;
+    double appliedPenalty;
 };

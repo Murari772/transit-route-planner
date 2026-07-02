@@ -4,13 +4,6 @@
 #include <vector>
 #include <string>
 
-struct PathStep {
-    std::string station;
-    std::string route;
-    TransitMode mode;
-    double cost;
-};
-
 class RouteNodeComparator {
     OptimizationCriterion criterion;
 public:
@@ -24,14 +17,16 @@ public:
 class Router {
 private:
     const Graph& graph;
-    double transferPenalty;
+    double metroWaitTime;
+    double busWaitTime;
 
 public:
-    explicit Router(const Graph& g, double penalty = 10.0) : graph(g), transferPenalty(penalty) {}
+    explicit Router(const Graph& g, double metroWait = 2.0, double busWait = 5.0) 
+        : graph(g), metroWaitTime(metroWait), busWaitTime(busWait) {}
 
     std::vector<PathStep> findBestRoute(
-        const std::string& start, 
-        const std::string& end, 
+        const std::string& startId, 
+        const std::string& endId, 
         OptimizationCriterion criterion = OptimizationCriterion::LEAST_TIME
     );
 };

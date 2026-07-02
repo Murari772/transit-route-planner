@@ -5,7 +5,7 @@
 }
 
 .line-yellow {
-  --line-color: #f1d84d;
+  --line-color: #d2c40c;
   --line-bg: #fefce8;
   --line-soft: #fef3c7;
 }
@@ -95,4 +95,16 @@
 
 .step-content[class*='line-'] .stops-details summary {
   color: var(--line-color);
+}
+
+.line-walk {
+  --line-color: #0d9488;
+  --line-bg: #ccfbf1;
+  --line-soft: #99f6e4;
+}
+
+.line-default {
+  --line-color: #3b82f6;
+  --line-bg: #eff6ff;
+  --line-soft: #dbeafe;
 }

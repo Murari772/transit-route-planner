@@ -1,12 +1,17 @@
 #include "Graph.hpp"
 #include "Router.hpp"
-#include "DataLoader.hpp"
+#include "GTFSParser.hpp"
 #include "RouteResponse.hpp"
 #include "CrowApp.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <filesystem>
+#include <unordered_map>
+#include <memory>
+
+namespace fs = std::filesystem;
 
 namespace {
 std::string trim(const std::string& s) {
@@ -19,29 +24,49 @@ std::string trim(const std::string& s) {
     return s.substr(start, end - start + 1);
 }
 
-constexpr double kTransferTimeMinutes = 5.0;
+constexpr double kMetroWaitTime = 2.0;
+constexpr double kBusWaitTime = 5.0;
 
-Graph loadNetwork() {
-    Graph network;
-    const std::vector<std::vector<std::string>> dataPathGroups = {
-        {"data/metro_network.json", "data/bus_routes.json"},
-        {"../data/metro_network.json", "../data/bus_routes.json"}
-    };
+std::unordered_map<std::string, std::shared_ptr<Router>> routers;
+std::unordered_map<std::string, std::shared_ptr<Graph>> graphs;
+std::vector<std::string> availableCities;
 
-    for (const auto& group : dataPathGroups) {
-        std::ifstream probe(group.front());
-        if (!probe) {
-            continue;
-        }
-
-        for (const auto& dataPath : group) {
-            DataLoader::loadMetroNetwork(dataPath, network);
-        }
-        return network;
+void loadNetworks() {
+    std::string basePath = "data/gtfs";
+    if (!fs::exists(basePath)) {
+        basePath = "../data/gtfs";
     }
 
-    std::cerr << "Could not locate network data files.\n";
-    return network;
+    if (!fs::exists(basePath)) {
+        std::cerr << "GTFS directory not found at " << basePath << "\n";
+        return;
+    }
+
+    for (const auto& entry : fs::directory_iterator(basePath)) {
+        if (entry.is_directory()) {
+            std::string city = entry.path().filename().string();
+            std::cout << "Discovered city: " << city << "\n";
+            
+            auto graph = std::make_shared<Graph>();
+            
+            // Iterate through sub-folders (providers like bus, metro)
+            for (const auto& providerEntry : fs::directory_iterator(entry.path())) {
+                if (providerEntry.is_directory()) {
+                    std::string provider = providerEntry.path().filename().string();
+                    std::cout << "  Loading feed: " << provider << "\n";
+                    TransitMode defaultMode = TransitMode::METRO;
+                    if (provider == "bus" || provider == "Bus") defaultMode = TransitMode::BUS;
+                    GTFSParser::parse(providerEntry.path().string(), *graph, defaultMode, provider + "_");
+                }
+            }
+            
+            graph->buildWalkingTransfers(500.0, 5.0);
+            
+            graphs[city] = graph;
+            routers[city] = std::make_shared<Router>(*graph, kMetroWaitTime, kBusWaitTime);
+            availableCities.push_back(city);
+        }
+    }
 }
 
 crow::response makeJsonResponse(int code, const nlohmann::json& body) {
@@ -52,25 +77,41 @@ crow::response makeJsonResponse(int code, const nlohmann::json& body) {
 }
 
 crow::response handleRouteRequest(
-    const std::string& source,
-    const std::string& destination,
-    const std::string& criterionStr,
-    Router& router
+    const std::string& city,
+    const std::string& sourceName,
+    const std::string& destinationName,
+    const std::string& criterionStr
 ) {
-    if (source.empty() || destination.empty()) {
+    if (routers.find(city) == routers.end()) {
+        return makeJsonResponse(404, {{"error", "City not found."}});
+    }
+
+    if (sourceName.empty() || destinationName.empty()) {
         return makeJsonResponse(400, {
             {"error", "Both source and destination are required."}
         });
     }
 
+    auto& graph = *graphs[city];
+    auto& router = *routers[city];
+
+    std::string sourceId = graph.getStationIdByName(sourceName);
+    std::string destId = graph.getStationIdByName(destinationName);
+
+    if (sourceId.empty() || destId.empty()) {
+         return makeJsonResponse(400, {
+            {"error", "Source or destination station not found."}
+        });
+    }
+
     const OptimizationCriterion criterion = parseCriterion(criterionStr);
-    const auto path = router.findBestRoute(source, destination, criterion);
+    const auto path = router.findBestRoute(sourceId, destId, criterion);
     const auto body = buildRouteResponse(
-        source,
-        destination,
+        sourceId,
+        destId,
         criterion,
         path,
-        kTransferTimeMinutes
+        graph
     );
 
     return makeJsonResponse(path.empty() ? 404 : 200, body);
@@ -78,8 +119,11 @@ crow::response handleRouteRequest(
 } // namespace
 
 int main() {
-    Graph delhiNetwork = loadNetwork();
-    Router router(delhiNetwork, kTransferTimeMinutes);
+    loadNetworks();
+
+    if (availableCities.empty()) {
+        std::cerr << "Warning: No cities loaded.\n";
+    }
 
     crow::SimpleApp app;
 
@@ -88,74 +132,71 @@ int main() {
         return makeJsonResponse(200, {{"status", "ok"}});
     });
 
+    CROW_ROUTE(app, "/cities")
+    .methods(crow::HTTPMethod::Get)
+    ([]() {
+        nlohmann::json response = availableCities;
+        return makeJsonResponse(200, response);
+    });
+
     CROW_ROUTE(app, "/route")
     .methods(crow::HTTPMethod::Get)
-    ([&router](const crow::request& req) {
+    ([](const crow::request& req) {
+        const char* cityParam = req.url_params.get("city");
         const char* sourceParam = req.url_params.get("source");
         const char* destinationParam = req.url_params.get("destination");
         const char* criterion = req.url_params.get("criterion");
 
-        if (!sourceParam || !destinationParam) {
+        if (!cityParam || !sourceParam || !destinationParam) {
             return makeJsonResponse(400, {
-                {"error", "Query parameters 'source' and 'destination' are required."}
+                {"error", "Query parameters 'city', 'source', and 'destination' are required."}
             });
         }
 
+        const std::string city = trim(cityParam);
         const std::string source = trim(sourceParam);
         const std::string destination = trim(destinationParam);
 
-        std::cout << "Source: [" << source << "]\n";
-        std::cout << "Destination: [" << destination << "]\n";
+        std::cout << "City: [" << city << "] Source: [" << source << "] Dest: [" << destination << "]\n";
 
         return handleRouteRequest(
+            city,
             source,
             destination,
-            criterion ? criterion : "least_time",
-            router
+            criterion ? criterion : "least_time"
         );
-    });
-
-    CROW_ROUTE(app, "/route")
-    .methods(crow::HTTPMethod::Post)
-    ([&router](const crow::request& req) {
-        try {
-            const auto body = nlohmann::json::parse(req.body);
-
-            if (!body.contains("source") || !body.contains("destination")) {
-                return makeJsonResponse(400, {
-                    {"error", "JSON body must include 'source' and 'destination'."}
-                });
-            }
-
-            const std::string criterion = body.value("criterion", "least_time");
-
-            return handleRouteRequest(
-                trim(body["source"].get<std::string>()),
-                trim(body["destination"].get<std::string>()),
-                criterion,
-                router
-            );
-        } catch (const nlohmann::json::exception&) {
-            return makeJsonResponse(400, {
-                {"error", "Invalid JSON body."}
-            });
-        }
     });
 
     CROW_ROUTE(app, "/stations")
     .methods(crow::HTTPMethod::Get)
-    ([&delhiNetwork]() {
-        auto stations = delhiNetwork.getStations();
+    ([](const crow::request& req) {
+        const char* cityParam = req.url_params.get("city");
+        if (!cityParam) {
+            return makeJsonResponse(400, {{"error", "Query parameter 'city' is required."}});
+        }
 
-        nlohmann::json response = stations;
+        std::string city = trim(cityParam);
+        if (graphs.find(city) == graphs.end()) {
+            return makeJsonResponse(404, {{"error", "City not found."}});
+        }
 
+        auto stations = graphs[city]->getStations();
+        std::vector<std::string> names;
+        for (const auto& st : stations) {
+            if (graphs[city]->hasTransitConnection(st.id)) {
+                names.push_back(st.name);
+            }
+        }
+
+        std::sort(names.begin(), names.end());
+        names.erase(std::unique(names.begin(), names.end()), names.end());
+
+        nlohmann::json response = names;
         return makeJsonResponse(200, response);
     });
 
     const int port = 8080;
     std::cout << "Metro Route Planner API listening on http://0.0.0.0:" << port << "\n";
-    std::cout << "GET  /route?source=<station>&destination=<station>&criterion=least_time|least_interchanges\n";
-    std::cout << "POST /route  {\"source\":\"...\",\"destination\":\"...\",\"criterion\":\"least_time\"}\n";
 
     app.port(port).multithreaded().run();
     return 0;

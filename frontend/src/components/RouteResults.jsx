@@ -13,7 +13,7 @@ export function RouteResults({ route }) {
         <div>
           <p className="eyebrow">Suggested route</p>
           <h2 id="results-title">
-            {route.source} to {route.destination}
+            {route.source.name} to {route.destination.name}
           </h2>
         </div>
         <span className="preference-pill">{preferenceLabel}</span>

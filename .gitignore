@@ -1,1 +1,17 @@
 build/
+backend/build/
+backend/benchmark_bin
+
+# Data (GTFS files are too large for GitHub)
+backend/data/gtfs/
+
+# Logs and test outputs
+*.log
+response.json
+
+# System files
+.DS_Store
+
+# IDE and editor files
+.vscode/
+.cph/

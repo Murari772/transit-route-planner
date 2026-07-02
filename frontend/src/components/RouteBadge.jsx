@@ -6,7 +6,7 @@ export function RouteBadge({ route, mode }) {
 
   return (
     <span className={`route-badge ${getRouteLineClass(route, mode)}`}>
-      {line.key === 'default' ? formatRouteName(route) : line.label}
+      {line.key === 'default' || line.key === 'bus' ? formatRouteName(route) : line.label}
     </span>
   )
 }

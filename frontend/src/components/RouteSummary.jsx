@@ -11,7 +11,7 @@ export function RouteSummary({ route }) {
       value: route.path.numberOfInterchanges,
     },
     {
-      label: 'Stations',
+      label: 'Intermediate Stations',
       value: route.path.stations?.length ?? 0,
     },
   ]

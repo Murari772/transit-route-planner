@@ -4,7 +4,7 @@ export function StationSequence({ stations }) {
       <h3>Station sequence</h3>
       <ol className="station-chain">
         {stations.map((station) => (
-          <li key={station}>{station}</li>
+          <li key={station.id}>{station.name}</li>
         ))}
       </ol>
     </div>

@@ -1,11 +1,12 @@
-import { InterchangeStep } from './InterchangeStep'
 import { RideStep } from './RideStep'
+import { WalkStep } from './WalkStep'
 
 export function RouteInstructions({ segments }) {
   const steps = segments.reduce(
     (accumulator, segment, index) => {
+      const isMajorRide = segment.type === 'ride' && segment.mode !== 'walk'
       const nextRideNumber =
-        segment.type === 'ride' ? accumulator.rideStepNumber + 1 : accumulator.rideStepNumber
+        isMajorRide ? accumulator.rideStepNumber + 1 : accumulator.rideStepNumber
 
       accumulator.items.push({
         index,
@@ -27,21 +28,25 @@ export function RouteInstructions({ segments }) {
       <ol className="step-list">
         {steps.map(({ segment, index, rideStepNumber }) => {
           if (segment.type === 'ride') {
+            if (segment.mode === 'walk') {
+              return (
+                <WalkStep
+                  key={`${segment.type}-${segment.from.id}-${segment.to.id}-${index}`}
+                  segment={segment}
+                  stepNumber={rideStepNumber}
+                />
+              )
+            }
             return (
               <RideStep
-                key={`${segment.type}-${segment.from}-${segment.to}-${index}`}
+                key={`${segment.type}-${segment.from.id}-${segment.to.id}-${index}`}
                 segment={segment}
                 stepNumber={rideStepNumber}
               />
             )
           }
 
-          return (
-            <InterchangeStep
-              key={`${segment.type}-${segment.atStation}-${index}`}
-              segment={segment}
-            />
-          )
+          return null
         })}
       </ol>
     </div>

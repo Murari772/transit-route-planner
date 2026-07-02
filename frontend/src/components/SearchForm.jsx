@@ -1,6 +1,9 @@
 import { routeCriteria } from '../constants'
 
 export function SearchForm({
+  city,
+  availableCities,
+  onCityChange,
   source,
   destination,
   criterion,
@@ -16,16 +19,32 @@ export function SearchForm({
 }) {
   return (
     <form className="search-card" onSubmit={onSubmit}>
+      {availableCities.length > 0 && (
+        <div className="city-selector">
+          <label className="field">
+            <span>City</span>
+            <select value={city} onChange={(e) => onCityChange(e.target.value)}>
+              {availableCities.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      )}
+
       <div className="station-grid">
         <label className="field">
           <span>From</span>
           <input
             type="text"
-            list="stations"
+            list={`stations-${city}`}
             value={source}
             onChange={(e) => onSourceChange(e.target.value)}
             placeholder="Starting station"
             autoComplete="off"
+            disabled={!city || stationsStatus !== 'ready'}
           />
         </label>
 
@@ -35,6 +54,7 @@ export function SearchForm({
           onClick={onSwapStations}
           aria-label="Swap source and destination"
           title="Swap stations"
+          disabled={!city || stationsStatus !== 'ready'}
         >
           ⇄
         </button>
@@ -43,16 +63,17 @@ export function SearchForm({
           <span>To</span>
           <input
             type="text"
-            list="stations"
+            list={`stations-${city}`}
             value={destination}
             onChange={(e) => onDestinationChange(e.target.value)}
             placeholder="Destination station"
             autoComplete="off"
+            disabled={!city || stationsStatus !== 'ready'}
           />
         </label>
       </div>
 
-      <datalist id="stations">
+      <datalist id={`stations-${city}`}>
         {stations.map((station) => (
           <option key={station} value={station} />
         ))}

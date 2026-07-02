@@ -9,6 +9,6 @@
 #include <asio/dispatch.hpp>
 #include <asio/ip/address.hpp>
 
-// Removed asio io_service shim
+
 
 #include "crow.h"

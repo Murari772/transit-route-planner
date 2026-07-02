@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { API_BASE_URL } from './constants'
 import { EmptyRouteState } from './components/EmptyRouteState'
+import { LoadingState } from './components/LoadingState'
 import { PlannerIntro } from './components/PlannerIntro'
 import { RouteNotice } from './components/RouteNotice'
 import { RouteResults } from './components/RouteResults'
@@ -12,6 +13,8 @@ import './styles/routeResults.css'
 import './styles/routeLines.css'
 
 function App() {
+  const [city, setCity] = useState('')
+  const [availableCities, setAvailableCities] = useState([])
   const [source, setSource] = useState('')
   const [destination, setDestination] = useState('')
   const [criterion, setCriterion] = useState('least_time')
@@ -21,7 +24,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [stationsStatus, setStationsStatus] = useState('loading')
 
-  const canSearch = source.trim() && destination.trim() && !isLoading
+  const canSearch = source.trim() && destination.trim() && !isLoading && city !== ''
 
   const handleSearch = async (event) => {
     event.preventDefault()
@@ -45,6 +48,7 @@ function App() {
 
     try {
       const params = new URLSearchParams({
+        city,
         source: actualSource,
         destination: actualDestination,
         criterion,
@@ -74,10 +78,39 @@ function App() {
     setError(null)
   }
 
+  const handleCityChange = (newCity) => {
+    setCity(newCity)
+    setSource('')
+    setDestination('')
+    setRoute(null)
+    setError(null)
+    setStations([])
+    setStationsStatus('loading')
+  }
+
   useEffect(() => {
     const controller = new AbortController()
+    fetch(`${API_BASE_URL}/cities`, { signal: controller.signal })
+      .then((res) => res.json())
+      .then((data) => {
+        setAvailableCities(data || [])
+        if (data && data.length > 0) {
+          setCity(data[0])
+        }
+      })
+      .catch((err) => {
+        if (err.name !== 'AbortError') console.error('Failed to load cities', err)
+      })
+    return () => controller.abort()
+  }, [])
 
-    fetch(`${API_BASE_URL}/stations`, { signal: controller.signal })
+  useEffect(() => {
+    if (!city) return
+
+    setStationsStatus('loading')
+    const controller = new AbortController()
+
+    fetch(`${API_BASE_URL}/stations?city=${encodeURIComponent(city)}`, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error('Station request failed')
         return res.json()
@@ -93,13 +126,16 @@ function App() {
       })
 
     return () => controller.abort()
-  }, [])
+  }, [city])
 
   return (
     <main className="app-shell">
       <section className="planner-panel" aria-labelledby="planner-title">
         <PlannerIntro />
         <SearchForm
+          city={city}
+          availableCities={availableCities}
+          onCityChange={handleCityChange}
           source={source}
           destination={destination}
           criterion={criterion}
@@ -116,8 +152,9 @@ function App() {
       </section>
 
       <RouteNotice message={error} />
-      {!route && !error && <EmptyRouteState />}
-      {route && !error && <RouteResults route={route} />}
+      {isLoading && <LoadingState />}
+      {!isLoading && !route && !error && <EmptyRouteState />}
+      {!isLoading && route && !error && <RouteResults route={route} />}
     </main>
   )
 }
