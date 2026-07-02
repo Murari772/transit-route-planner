@@ -4,6 +4,7 @@ backend/benchmark_bin
 
 # Data (GTFS files are too large for GitHub)
 backend/data/gtfs/
+*.zip
 
 # Logs and test outputs
 *.log
